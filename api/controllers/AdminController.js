@@ -10,7 +10,7 @@ module.exports = {
   */
   procesarInicioSesion: async (request, response) =>{
     //Busca un registro con esas credenciales
-    let admin = await Admin.findOne({email: request.body.correo, clave: request.body.clave});
+    let admin = await Admin.findOne({email: request.body.correo, clave: request.body.clave, activo: true});
 
     //comprueba si se encontro un registro y redirije a la pagina de inicio
     if (admin) {
@@ -116,6 +116,9 @@ module.exports = {
     orden[0].detalle = await OrdenDetalle.find({ orden: request.params.ordenId }).populate('foto');
     return response.view('pages/admin/orden_cliente_detalle', { orden });
   },
+  /**
+  * Nos permite desactivar una foto
+  */
   desactivarFoto: async (request, response) =>{
     if (!request.session || !request.session.admin) {
       request.addFlash('mensaje', 'Sesión inválida');
@@ -154,5 +157,43 @@ module.exports = {
     request.addFlash('mensaje', 'Se cambio el estado con exito');
 
     return response.redirect('/admin/clientes');
+  },
+  /**
+  * Nos redirige a la pagina de administradores
+  */
+  administradores: async (request, response) =>{
+    if (!request.session || !request.session.admin) {
+      request.addFlash('mensaje', 'Sesión inválida');
+      return response.redirect('/admin/inicio-sesion');
+    }
+
+    let administradores = await Admin.find();
+    response.view('pages/admin/administradores',{administradores});
+  },
+  /**
+  * Nos redirige a la pagina detalle de orden
+  */
+  cambiarEstadoAdministrador: async (request, response) =>{
+    if (!request.session || !request.session.admin) {
+      request.addFlash('mensaje', 'Sesión inválida');
+      return response.redirect('/admin/inicio-sesion');
+    }
+
+    let administrador = await Admin.findOne({id: request.params.adminId});
+
+    if(!administrador){
+      request.addFlash('mensaje', 'No se encontro el administrador');
+      return response.redirect('/admin/administradores');
+    }
+
+    if(administrador.id === request.session.admin.id){
+      request.addFlash('mensaje', 'No se puede desactivar a sí mismo');
+      return response.redirect('/admin/administradores');
+    }
+
+    await Admin.update({id: request.params.adminId},{activo: !administrador.activo});
+    request.addFlash('mensaje', 'Se cambio el estado con exito');
+
+    return response.redirect('/admin/administradores');
   },
 }

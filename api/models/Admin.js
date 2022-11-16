@@ -21,7 +21,9 @@ module.exports = {
 
     email: {type: 'string'},
 
-    clave: {type: 'string'}
+    clave: {type: 'string'},
+
+    activo: {type: 'boolean'},
 
     //  ╔═╗╔═╗╔═╗╔═╗╔═╗╦╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗

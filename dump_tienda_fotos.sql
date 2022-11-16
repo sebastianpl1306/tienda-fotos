@@ -16,10 +16,12 @@ CREATE TABLE admin(
     nombre VARCHAR NOT NULL,
     email VARCHAR NOT NULL,
     clave VARCHAR NOT NULL,
+    activo BOOLEAN NOT NULL,
     primary key(id)
 );
 
-INSERT INTO admin(nombre, email, clave) VALUES('sebastian admin', 'admin@gmail.com', '123');
+INSERT INTO admin(nombre, email, clave, activo) VALUES('sebastian admin', 'admin@gmail.com', '123', true);
+INSERT INTO admin(nombre, email, clave, activo) VALUES('sebastian admin 2', 'admin2@gmail.com', '12345', true);
 
 CREATE TABLE foto(
     id SERIAL NOT NULL,
