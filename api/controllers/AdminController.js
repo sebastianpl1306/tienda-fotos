@@ -196,4 +196,19 @@ module.exports = {
 
     return response.redirect('/admin/administradores');
   },
+  /**
+  * Nos redirige a la pagina de administradores
+  */
+  dashboard: async (request, response) =>{
+    if (!request.session || !request.session.admin) {
+      request.addFlash('mensaje', 'Sesión inválida');
+      return response.redirect('/admin/inicio-sesion');
+    }
+
+    let numeroClientes = await Cliente.count();
+    let numeroOrdenes = await Orden.count();
+    let numeroFotos = await Foto.count();
+
+    response.view('pages/admin/dashboard',{numeroClientes, numeroOrdenes, numeroFotos});
+  },
 }
